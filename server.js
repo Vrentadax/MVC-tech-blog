@@ -47,6 +47,16 @@ const PORT = process.env.PORT || 3001;
 
 // session logic
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(session(sess));
+app.use('/', controllers);
+
+// use handlebars
+app.engine('handlebars', exphbs());
+app.set('view engine', 'handlebars');
+
 sequelize.sync({ force: false }).then(() => {
     app.listen(PORT, () => console.log(`Now listening on port ${PORT}`));
 });
