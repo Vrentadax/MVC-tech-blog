@@ -34,7 +34,7 @@
 const express = require('express');
 const path = require('path');
 const controllers = require('./controllers');
-const sequelize = requre('./config/connection');
+const sequelize = require('./config/connection');
 
 const exphbs = require('express-handlebars');
 
@@ -46,6 +46,15 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // session logic
+const sess = {
+    secret: "I ate the cookie",
+    cookie: {},
+    resave: false,
+    saveUninitialized: true,
+    store: new SequelizeStore({
+        db: sequelize,
+    }),
+};
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
