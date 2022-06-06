@@ -47,7 +47,7 @@ const PORT = process.env.PORT || 3001;
 
 // session logic
 const sess = {
-    secret: "I ate the cookie",
+    secret: 'I ate the cookie',
     cookie: {},
     resave: false,
     saveUninitialized: true,

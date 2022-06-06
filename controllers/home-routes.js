@@ -1,33 +1,33 @@
-const router = require("express").Router();
-const { User, Post, Comment } = require("../models");
-const sequelize = require("../config/connection");
+const router = require('express').Router();
+const { User, Post, Comment } = require('../models');
+const sequelize = require('../config/connection');
 
-router.get("/", (req, res) => {
+router.get('/', (req, res) => {
   // get all posts
   Post.findAll({
-    attributes: ["id", "title", "body", "user_id"],
+    attributes: ['id', 'title', 'body', 'user_id'],
     include: [
       {
         model: User,
-        as: "user",
-        attributes: ["username"],
+        as: 'user',
+        attributes: ['username'],
       },
       {
         model: Comment,
-        as: "comments",
-        attributes: ["id", "comment_text", "user_id"],
+        as: 'comments',
+        attributes: ['id', 'comment_text', 'user_id'],
       },
     ],
   })
     .then((dbPostData) => {
 
         if (!dbPostData) {
-        res.status(404).json({ message: "No Posts Available" });
+        res.status(404).json({ message: 'No Posts Available' });
         return;
       }
       const posts = dbPostData.map((post) => post.get({ plain: true }));
       console.log(posts);
-      res.render("home", { posts, loggedIn: req.session.loggedIn });
+      res.render('home', { posts, loggedIn: req.session.loggedIn });
     })
     .catch((err) => {
       console.log(err);
@@ -36,27 +36,27 @@ router.get("/", (req, res) => {
 });
 
 // pulls up a single post page
-router.get("/viewpost/:id", (req, res) => {
+router.get('/viewpost/:id', (req, res) => {
   Post.findOne({
     where: {
       id: req.params.id,
     },
-    attributes: ["id", "title", "body", "user_id"],
+    attributes: ['id', 'title', 'body', 'user_id'],
     include: [
       {
         model: User,
-        as: "user",
-        attributes: ["username"],
+        as: 'user',
+        attributes: ['username'],
       },
       {
         model: Comment,
-        as: "comments",
-        attributes: ["id", "comment_text", "user_id"],
+        as: 'comments',
+        attributes: ['id', 'comment_text', 'user_id'],
         include: [
           {
             model: User,
-            as: "user",
-            attributes: ["username"],
+            as: 'user',
+            attributes: ['username'],
           },
         ],
       },
@@ -64,13 +64,13 @@ router.get("/viewpost/:id", (req, res) => {
   })
     .then((dbPostData) => {
       if (!dbPostData) {
-        res.status(404).json({ message: "No Posts Available" });
+        res.status(404).json({ message: 'No Posts Available' });
         return;
       }
       const post = dbPostData.get({ plain: true });
       console.log(post);
       const myPost = post.user_id == req.session.user_id;
-      res.render("single-post", {
+      res.render('single-post', {
         post,
         loggedIn: req.session.loggedIn,
         currentUser: myPost,
@@ -82,34 +82,34 @@ router.get("/viewpost/:id", (req, res) => {
     });
 });
 
-router.get("/login", (req, res) => {
-  console.log("Is logged in?", req.session.loggedIn);
-  res.render("login", { loggedIn: req.session.loggedIn });
+router.get('/login', (req, res) => {
+  console.log('Is logged in?', req.session.loggedIn);
+  res.render('login', { loggedIn: req.session.loggedIn });
 });
 
 // pulls up dashboard
-router.get("/dashboard", (req, res) => {
-  console.log(req.session.user_id, " this is the session id");
+router.get('/dashboard', (req, res) => {
+  console.log(req.session.user_id, ' this is the session id');
   Post.findAll({
     where: {
       user_id: req.session.user_id,
     },
-    attributes: ["id", "title", "body", "user_id"],
+    attributes: ['id', 'title', 'body', 'user_id'],
     include: [
       {
         model: User,
-        as: "user",
-        attributes: ["username"],
+        as: 'user',
+        attributes: ['username'],
       },
       {
         model: Comment,
-        as: "comments",
-        attributes: ["id", "comment_text", "user_id"],
+        as: 'comments',
+        attributes: ['id', 'comment_text', 'user_id'],
         include: [
           {
             model: User,
-            as: "user",
-            attributes: ["username"],
+            as: 'user',
+            attributes: ['username'],
           },
         ],
       },
@@ -117,12 +117,12 @@ router.get("/dashboard", (req, res) => {
   })
     .then((dbPostData) => {
       if (!dbPostData) {
-        res.status(404).json({ message: "No Posts Available" });
+        res.status(404).json({ message: 'No Posts Available' });
         return;
       }
       const posts = dbPostData.map((post) => post.get({ plain: true })); 
       console.log(posts);
-      res.render("dashboard", { posts, loggedIn: req.session.loggedIn });
+      res.render('dashboard', { posts, loggedIn: req.session.loggedIn });
     })
     .catch((err) => {
       console.log(err);
@@ -130,13 +130,13 @@ router.get("/dashboard", (req, res) => {
     });
 });
 
-router.get("/post", (req, res) => {
-  res.render("create-post", { loggedIn: req.session.loggedIn });
+router.get('/post', (req, res) => {
+  res.render('create-post', { loggedIn: req.session.loggedIn });
 });
 
 // pulls up the edit page
-router.get("/edit/:id", (req, res) => {
-  res.render("edit-post", {
+router.get('/edit/:id', (req, res) => {
+  res.render('edit-post', {
     loggedIn: req.session.loggedIn,
     post_id: req.params.id,
   });
